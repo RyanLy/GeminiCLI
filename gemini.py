@@ -57,6 +57,8 @@ def get_orders():
     print_json(response)
 
 # new_order(symbol = ETH_USD_SYMBOL, amount = 1, price = 500, side = 'buy')
+# python3 gemini.py buy ethusd 4 1100
+# python3 gemini.py buy btcusd 0.1 10000
 def new_order(symbol, amount, price, side, stop=False):
     request_endpoint = "/v1/order/new"
     url = "https://api.gemini.com" + request_endpoint
@@ -114,8 +116,8 @@ def main():
     buy_parser = subparsers.add_parser('buy', help='Create a new buy order')
     buy_parser.add_argument('symbol_pair', type=str,
                             help='symbol pair', choices=APPROVED_SYMBOL_PAIRS)
-    buy_parser.add_argument('amount', type=int)
-    buy_parser.add_argument('price', type=str)
+    buy_parser.add_argument('amount', type=float)
+    buy_parser.add_argument('price', type=float)
     buy_parser.add_argument('--stop', action='store_true',
                             help='whether this is a stop limit')
 
@@ -123,8 +125,8 @@ def main():
     sell_parser = subparsers.add_parser('sell', help='Create a new sell order')
     sell_parser.add_argument('symbol_pair', type=str,
                             help='symbol pair', choices=APPROVED_SYMBOL_PAIRS)
-    sell_parser.add_argument('amount', type=int)
-    sell_parser.add_argument('price', type=str)
+    sell_parser.add_argument('amount', type=float)
+    sell_parser.add_argument('price', type=float)
     sell_parser.add_argument('--stop', action='store_true',
                             help='whether this is a stop limit')
 
@@ -147,8 +149,8 @@ def main():
         elif args.all:
             cancel_all()
     elif command == 'buy' or command == 'sell':
-        prompt = '[{command}] {amount} {symbol_pair} @ ${price}. Stop limit = {stop}. Are you sure? (y/n)\n'.format(
-            command=command, amount=args.amount, symbol_pair=args.symbol_pair, price=args.price, stop=args.stop)
+        prompt = '[{command}] {amount} {symbol_pair} @ ${price}. Total= ${total}. Stop limit = {stop}. Are you sure? (y/n)\n'.format(
+            command=command, amount=args.amount, symbol_pair=args.symbol_pair, price=args.price, total=args.amount * args.price, stop=args.stop)
         if input(prompt) == 'y':
             new_order(symbol=args.symbol_pair, amount=args.amount,
                     price=args.price, side=command, stop=args.stop)
