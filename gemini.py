@@ -24,7 +24,7 @@ APPROVED_SYMBOL_PAIRS = [ETH_USD_SYMBOL, BTC_USD_SYMBOL]
 
 # Helpers
 def print_json(response):
-    print(json.dumps(response.json()))
+    print(json.dumps(response.json(), indent=2))
 
 def generate_nonce():
     t = datetime.datetime.now()
