@@ -70,7 +70,7 @@ def new_order(symbol, amount, price, side, stop=False):
         "amount": amount,
         "price": price,
         "side": side,
-        "type": "exchange limit"
+        "type": "exchange stop limit" if stop else "exchange limit"
     }
 
     if stop:
@@ -98,7 +98,20 @@ def cancel_all():
     url = "https://api.gemini.com" + request_endpoint
     payload = {
         "request": request_endpoint,
+        "nonce": generate_nonce()
+    }
+
+    response = post_request(url, payload)
+    print_json(response)
+
+def past_trades(symbol_pair, limit=5):
+    request_endpoint = "/v1/mytrades"
+    url = "https://api.gemini.com" + request_endpoint
+    payload = {
+        "request": request_endpoint,
         "nonce": generate_nonce(),
+        "symbol": symbol_pair,
+        "limit_trades": limit
     }
 
     response = post_request(url, payload)
@@ -137,6 +150,10 @@ def main():
     group.add_argument(
         '--all', action='store_true', help='whether to cancel all orders')
 
+    past_trades_parser = subparsers.add_parser('past', help='Past trades')
+    past_trades_parser.add_argument('symbol_pair', type=str,
+                        help='symbol pair', choices=APPROVED_SYMBOL_PAIRS)
+
     args = parser.parse_args()
 
     command = args.command
@@ -154,6 +171,8 @@ def main():
         if input(prompt) == 'y':
             new_order(symbol=args.symbol_pair, amount=args.amount,
                     price=args.price, side=command, stop=args.stop)
+    elif command == 'past':
+        past_trades(args.symbol_pair)
 
 if __name__=="__main__":
     main()
