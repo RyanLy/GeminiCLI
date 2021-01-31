@@ -126,7 +126,7 @@ def main():
     subparsers.add_parser(
         'status', help='Get status of active orders')
 
-    buy_parser = subparsers.add_parser('buy', help='Create a new buy order')
+    buy_parser = subparsers.add_parser('buy', help='Create a new buy order. python gemini.py buy ethusd/btcusd 2 1000')
     buy_parser.add_argument('symbol_pair', type=str,
                             help='symbol pair', choices=APPROVED_SYMBOL_PAIRS)
     buy_parser.add_argument('amount', type=float)
@@ -135,7 +135,7 @@ def main():
                             help='whether this is a stop limit')
 
 
-    sell_parser = subparsers.add_parser('sell', help='Create a new sell order')
+    sell_parser = subparsers.add_parser('sell', help='Create a new sell order python gemini.py sell ethusd/btcusd 2 5000')
     sell_parser.add_argument('symbol_pair', type=str,
                             help='symbol pair', choices=APPROVED_SYMBOL_PAIRS)
     sell_parser.add_argument('amount', type=float)
@@ -166,7 +166,7 @@ def main():
         elif args.all:
             cancel_all()
     elif command == 'buy' or command == 'sell':
-        prompt = '[{command}] {amount} {symbol_pair} @ ${price}. Total= ${total}. Stop limit = {stop}. Are you sure? (y/n)\n'.format(
+        prompt = '[{command}] {amount} {symbol_pair} @ ${price}. Total = ${total}. Stop limit = {stop}. Are you sure? (y/n)\n'.format(
             command=command, amount=args.amount, symbol_pair=args.symbol_pair, price=args.price, total=args.amount * args.price, stop=args.stop)
         if input(prompt) == 'y':
             new_order(symbol=args.symbol_pair, amount=args.amount,
